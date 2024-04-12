@@ -1,9 +1,10 @@
-// 'use client';
-import React from 'react'
+'use client';
+import React, { useState } from 'react'
 
 interface Props{
     toggle:()=>void;
 }
+
 
 const EurButton = ({toggle}: Props) => {
   return (

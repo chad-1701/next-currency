@@ -1,28 +1,27 @@
-// 'use client';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
+
 ChartJS.register(...registerables);
 
 interface Props {
     currency: string;
 }
 
-const fetchDataForDate = async (date: string, currency: string) => {
-   
-    const response = await fetch (`https://api.currencyapi.com/v3/historical?apikey=cur_live_qh7SqW0pCQEpdeio1zUCYkWrrnBdjMTEDZBNh7bP&currencies=${currency}&date=${date}`);
+const fetchDataForDate = async (date: string, { currency }: Props) => {
+    const response = await fetch(
+        `https://api.currencyapi.com/v3/historical?apikey=cur_live_dr1RTm4WiN7CGXnP0JXPelLvFoeaBmuFRC8Jnk8Q&currencies=${currency}&date=${date}`
+    );
     const data = await response.json();
     console.log(data['data'][currency]['value']);
     return data['data'][currency]['value'];
-
-    
 };
 
 const getDates = () => {
     const dates = [];
     const today = new Date();
-    for (let i = 1; i <= 6; i++) { 
+    for (let i = 1; i <= 6; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() - i);
         dates.push(date.toISOString().slice(0, 10));
@@ -31,43 +30,48 @@ const getDates = () => {
     return dates.reverse();
 };
 
-const fetchAndStoreData = async (currency: string) => {
-    const dataMap: Record<string, number> = {};
-    const datesList = getDates();
+const LineChart = ({ currency }: Props) => {
+    const [chartData, setChartData] = useState<any>(null);
 
-    for (const date of datesList) {
-        
-        const data = await fetchDataForDate(date, currency);
-        dataMap[date] = data;
-    }
-    console.log(dataMap);
-    return dataMap;
-};
+    useEffect(() => {
+        const fetchAndStoreData = async () => {
+            const dataMap: Record<string, number> = {};
+            const datesList = getDates();
 
-const LineChart = async ({ currency }: Props) => {
-    const cachedData: Record<string, number> = {}
-  
-        const dataMap = await fetchAndStoreData(currency);
+            for (const date of datesList) {
+                const data = await fetchDataForDate(date, { currency });
+                dataMap[date] = data;
+            }
+            console.log(dataMap);
+            const chartData = {
+                labels: Object.keys(dataMap),
+                datasets: [
+                    {
+                        label: currency,
+                        data: Object.values(dataMap),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'USD',
+                        data: [1,1,1,1,1,1],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
             
-                const chartData = {
-                    labels: Object.keys(dataMap),
-                    datasets: [
-                        {
-                            label: currency,
-                            data: Object.values(dataMap),
-                        },
-                        {
-                            label: "USD",
-                            data: [1,1,1,1,1,1],
-                        },
-                    ],
-                };
-            
-    
+                    }
+                ],
+            };
+            setChartData(chartData);
+        };
+
+        fetchAndStoreData();
+    }, [currency]);
 
     return (
         <div>
-            <Line data={chartData}></Line>
+            {chartData && <Line data={chartData} />}
         </div>
     );
 };
