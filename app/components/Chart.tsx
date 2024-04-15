@@ -49,8 +49,8 @@ const LineChart = ({ currency }: Props) => {
                     {
                         label: currency,
                         data: Object.values(dataMap),
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'gray',
+                        borderColor: 'gray',
                         borderWidth: 1,
                     },
                     {
