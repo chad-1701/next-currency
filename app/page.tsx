@@ -7,12 +7,12 @@ import { useState } from "react";
 import EurButton from "./components/EurButton";
 import ZarButton from "./components/ZarButton";
 export default function Home() {
-  const [currency,setCurrency] = useState("EUR");
+  const [currency,setCurrency] = useState("ZAR");
 
   return (
     
     <>
-
+    <h1>Currency exchange</h1>
     <EurButton toggle={()=>setCurrency("EUR")}></EurButton>
     <ZarButton toggle={()=>setCurrency("ZAR")}></ZarButton>
 

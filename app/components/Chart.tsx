@@ -11,7 +11,7 @@ interface Props {
 
 const fetchDataForDate = async (date: string, { currency }: Props) => {
     const response = await fetch(
-        `https://api.currencyapi.com/v3/historical?apikey=cur_live_dr1RTm4WiN7CGXnP0JXPelLvFoeaBmuFRC8Jnk8Q&currencies=${currency}&date=${date}`
+        `https://api.currencyapi.com/v3/latest?apikey=cur_live_0ZnsS5cJ1nYkxjlidEdzDRFKZmfc2VVr4hzdo2M0&currencies=${currency}&date=${date}`
     );
     const data = await response.json();
     console.log(data['data'][currency]['value']);
